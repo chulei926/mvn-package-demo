@@ -1,0 +1,38 @@
+version: '2'
+services:
+  @project.artifactId@:
+     restart: always
+     network_mode: "host"
+     image: @project.artifactId@:@project.version@
+     container_name: "@project.artifactId@-@project.version@"
+     environment:
+       SERVER_PORT: "19006"
+       JAVA_OPTS: "-Xmx512M -Xms512M"
+       SPRING_DATASOURCE_URL: "jdbc:postgresql://192.168.35.215:9432/db_upf?currentSchema=ems&stringtype=unspecified"
+       SPRING_DATASOURCE_USERNAME: "ENC(RT+AZ/x5859ulKf3l57Mlqs+WijgYIww)"
+       SPRING_DATASOURCE_PASSWORD: "ENC(aMtPO6+B3JmO4d7SWwx5UXeJdKKkLgOv)"
+
+       KAFKA_SERVERS: "10.230.254.201:9092"
+       KAFKA_TOPIC_CM: "cm_upf_change_event"
+       KAFKA_TOPIC_SECURITY: "ems_security_log"
+       KAFKA_TOPIC_NE_OPERATION: "om_ne_operation_log"
+
+       CUSTOM_HTTP_READ_TIMEOUT: 30
+       CUSTOM_HTTP_CONNECT_TIMEOUT: 30
+
+       CUSTOM_JOB_TRIGGER_CRON_MONITOR_APP: "0 0/1 * * * ?"
+       CUSTOM_JOB_TRIGGER_CRON_MONITOR_SERVER: "0 0/2 * * * ?"
+       CUSTOM_JOB_TRIGGER_CRON_MONITOR_DB: "0 0/3 * * * ?"
+       CUSTOM_JOB_TRIGGER_CRON_MONITOR_BACKUP_DB: "0 0/4 * * * ?"
+       CUSTOM_JOB_TRIGGER_CRON_MONITOR_BACKUP_DB_CLEAR: "0 0/5 * * * ?"
+
+       MONITOR_ITEM_APP_PROTOCOL: "https"
+       MONITOR_ITEM_APP_IP: "192.168.35.235"
+       MONITOR_ITEM_APP_PORTS: "19001"
+       MONITOR_ITEM_SERVER_PROM: "http://localhost:9090"
+       MONITOR_ITEM_SERVER_IP: "192.168.35.235"
+
+       LOG_DIR: "/mnt/logs"
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - /home/ffcs/upf/logs:/mnt/logs

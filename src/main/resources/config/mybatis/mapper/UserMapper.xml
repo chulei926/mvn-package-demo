@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mvn.pkg.demo.mapper.UserMapper">
+
+	<resultMap id="baseResMap" type="com.example.mvn.pkg.demo.domain.User">
+		<result property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="age" column="age"/>
+	</resultMap>
+
+	<sql id="selectBaseColumn">
+		select t1.id,
+		       t1.username,
+		       t1.age
+		from ems_user t1
+	</sql>
+
+	<select id="getById" resultMap="baseResMap">
+		<include refid="selectBaseColumn"/>
+		where t1.id = #{id}
+	</select>
+
+</mapper>
