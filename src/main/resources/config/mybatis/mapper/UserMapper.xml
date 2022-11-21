@@ -9,15 +9,15 @@
 	</resultMap>
 
 	<sql id="selectBaseColumn">
-		select t1.id,
-		       t1.username,
-		       t1.age
-		from ems_user t1
+		select id,
+		       username,
+		       age
+		from chul_schema.user
 	</sql>
 
 	<select id="getById" resultMap="baseResMap">
 		<include refid="selectBaseColumn"/>
-		where t1.id = #{id}
+		where id = #{id}
 	</select>
 
 </mapper>
