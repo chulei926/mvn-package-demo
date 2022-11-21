@@ -42,10 +42,10 @@
 			<fileMode>0644</fileMode>
 			<!-- 是否进行属性替换 -->
 			<filtered>true</filtered>
-			<includes>
-				<include>*.xml</include>
-				<include>*.properties</include>
-			</includes>
+<!--			<includes>-->
+<!--				<include>*.xml</include>-->
+<!--				<include>*.properties</include>-->
+<!--			</includes>-->
 		</fileSet>
 
 		<!-- 将项目说明文档打包到docs目录中 -->

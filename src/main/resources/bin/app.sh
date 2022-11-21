@@ -1,13 +1,17 @@
 #!/bin/sh
 SERVER_NAME="${project.artifactId}"
 JAR_NAME="${project.artifactId}-${project.version}.jar"
-JAR_PATH="$PROJECT_DIR/lib/$JAR_NAME"
-USER=`whoami`
-
+APP_NAME=com.example.mvn.pkg.demo.MvnPackageDemoApplication
 cd `dirname $0`   # 进入bin目录
 BIN_DIR=`pwd`     # bin目录绝对路径
 cd ..             # 返回到上一级项目根目录路径
 PROJECT_DIR=`pwd`  # `pwd` 执行系统命令并获得结果
+
+
+JAR_PATH="$PROJECT_DIR/lib/$JAR_NAME"
+USER=`whoami`
+
+
 
 IS_DOCKER_ENV=false
 if [ -f "/.dockerenv" ]; then
@@ -27,6 +31,13 @@ if [ "$JAVA_OPTS" != "" ]; then
 fi
 
 CLASSPATH=$PROJECT_DIR:$PROJECT_DIR/lib/*.jar
+
+CP_PARAM=$PROJECT_DIR
+for i in "$PROJECT_DIR"/lib/*.jar;do
+	CP_PARAM="$CP_PARAM":"$i"
+done
+
+
 CONFIG_FILES="-Dspring.config.location=$PROJECT_DIR/config/ "
 
 help() {
@@ -56,10 +67,22 @@ start(){
     if [ "$IS_DOCKER_ENV" = "true" ]; then
       $JAVA_CMD $CONFIG_FILES $JAVA_MEM_OPTS -Duser.timezone=GMT+8 -Duser.language=zh -classpath $CLASSPATH -jar $PROJECT_DIR/lib/$JAR_NAME > start.log 2>&1
     else
-      nohup $JAVA_CMD $CONFIG_FILES $JAVA_MEM_OPTS -Duser.timezone=GMT+8 -Duser.language=zh -classpath $CLASSPATH -jar $PROJECT_DIR/lib/$JAR_NAME > start.log 2>&1 &
+#      nohup $JAVA_CMD $CONFIG_FILES $JAVA_MEM_OPTS -Duser.timezone=GMT+8 -Duser.language=zh -classpath $CLASSPATH -jar $PROJECT_DIR/lib/$JAR_NAME > start.log 2>&1 &
+      nohup $JAVA_CMD $CONFIG_FILES $JAVA_MEM_OPTS -Duser.timezone=GMT+8 -Duser.language=zh -cp $CP_PARAM $APP_NAME  > start.log 2>&1 &
     fi
-    echo "$SERVER_NAME is started!"
+    check
   fi
+}
+
+check(){
+  sleep 3
+  is_exist
+    if [ $? -eq "1" ]; then
+      echo "$SERVER_NAME is already running, PID=${pid}"
+    else
+      echo "$SERVER_NAME start failed! last 100 lines log:"
+      tail -100 start.log
+    fi
 }
 
 stop(){

@@ -5,6 +5,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -34,6 +35,9 @@ public class MyBatisConfig {
 	@Resource
 	private DataSource dataSource;
 
+	@Value("${custom.mybatis.log.enable:false}")
+	private Boolean enableLog;
+
 	@Bean(name = "sqlSessionFactory")
 	public SqlSessionFactoryBean sqlSessionFactory() throws Exception {
 		// 创建 sqlSessionFactory
@@ -49,6 +53,9 @@ public class MyBatisConfig {
 		// 自定义配置
 		org.apache.ibatis.session.Configuration myBatisConfig = new org.apache.ibatis.session.Configuration();
 		//		myBatisConfig.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
+		if (Boolean.TRUE.equals(enableLog)) {
+			myBatisConfig.setLogImpl(org.apache.ibatis.logging.stdout.StdOutImpl.class);
+		}
 		myBatisConfig.setCacheEnabled(true);
 		myBatisConfig.setUseGeneratedKeys(true);
 		myBatisConfig.setDefaultExecutorType(ExecutorType.REUSE);
